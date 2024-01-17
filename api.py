@@ -2,14 +2,21 @@ import requests
 import os
 from flask import Flask
 
-query = """query DigitalBankingJourneysByBusinessLine() {
-    dBJourneys(orderBy: title_ASC) {
+query_actor = """query Actor {
+    actor(where: {id: "clrgc0jejnxgq0cuweyp1g4vl"}) {
+    name
+    biography
+    photo {
       id
-      title
-      slug
-      introStatement
+    }
+    episodes {
+      id
+      shows {
+        id
+      }
     }
   }
+}
 """
 
 url = os.getenv("URL")
@@ -18,9 +25,9 @@ headers = {"Authorization": f"Bearer {token}"}
 app = Flask(__name__)
 
 
-@app.route("/getJourney")
+@app.route("/get_actor")
 def get_actor():
-    payload = {"query": query}
+    payload = {"query": query_actor}
     r = requests.post(url, json=payload, headers=headers)
     json_data = r.json()
-    return {"response": json_data}
+    return {"actor": json_data}
